@@ -35,7 +35,7 @@ public class LonelyTwitterActivity extends Activity {
 	private ListView oldTweetsList;
 	private ArrayList<Tweet> tweetlist;
 	private ArrayAdapter<Tweet> adapter;
-
+	private Button saveButton;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -45,18 +45,10 @@ public class LonelyTwitterActivity extends Activity {
 		setContentView(R.layout.main);
 
 		bodyText = (EditText) findViewById(R.id.body);
-		Button saveButton = (Button) findViewById(R.id.save);
-		Button clearButton=(Button) findViewById(R.id.clear);
+
 		oldTweetsList = (ListView) findViewById(R.id.oldTweetsList);
 
-		clearButton.setOnClickListener(new View.OnClickListener(){
-			public void onClick(View v){
-				
-			}
-		});
-
-
-
+		Button saveButton = (Button) findViewById(R.id.save);
 		saveButton.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View v) {
@@ -67,12 +59,15 @@ public class LonelyTwitterActivity extends Activity {
 				tweetlist.add(tweet);
 
 				adapter.notifyDataSetChanged();
-
 				saveInFile();
-
+				oldTweetsList.setAdapter(adapter);
 
 			}
 		});
+
+
+
+
 	}
 
 	@Override
@@ -83,7 +78,34 @@ public class LonelyTwitterActivity extends Activity {
 		Log.i("LifeCycle --->", "onStart is called");
 		loadFromFile();
 		adapter = new ArrayAdapter<Tweet>(this, R.layout.list_item, tweetlist);
+		Button clearButton=(Button) findViewById(R.id.clear);
 		oldTweetsList.setAdapter(adapter);
+		clearButton.setOnClickListener(new View.OnClickListener(){
+			public void onClick(View v){
+				adapter.clear();
+				oldTweetsList.setAdapter(null);
+				deleteFile();
+			}
+		});
+		Log.d("OnStart", "Endof start");
+
+	}
+
+	@Override
+	protected void onResume() {
+		Log.d("Onresume", "onResume: in resume");
+		super.onResume();
+		Log.d("Onresume", "onResume: End ");
+	}
+
+	private void deleteFile(){
+		//https://stackoverflow.com/questions/3554722/how-to-delete-internal-storage-file-in-android
+		//2018-25-01
+		File dir = getFilesDir();
+		File file = new File(dir, FILENAME);
+		Log.d("Delete_file-->", "deleteFile: "+ file);
+		boolean deleted = file.delete();
+		Log.d("delete", "deleteFile: "+ deleted);
 
 	}
 
@@ -133,5 +155,6 @@ public class LonelyTwitterActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		Log.i("Lifecycle", "onDestroy is called");
+
 	}
 }
