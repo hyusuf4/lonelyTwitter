@@ -54,6 +54,7 @@ public class LonelyTwitterActivity extends Activity {
 				tweetList.add(newTweet);
 				adapter.notifyDataSetChanged();
 				saveInFile(); // TODO replace this with elastic search
+				ElasticsearchTweetController.AddTweetsTask
 			}
 		});
 
